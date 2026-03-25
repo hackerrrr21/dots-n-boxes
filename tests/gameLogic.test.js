@@ -1,6 +1,6 @@
-// Mock window object for testing
 global.window = {
     UI: {
+        initBoard: jest.fn(),
         updateScores: jest.fn(),
         updateTurn: jest.fn(),
         drawLine: jest.fn(),
