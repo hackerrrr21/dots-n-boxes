@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dots and Boxes Classic</title>
+    <meta name="description" content="A classic aesthetic dots and boxes game">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active">
+            <div class="loading-content">
+                <div class="loading-logo">☀️ 🌙 ⭐</div>
+                <h1 class="title">Dots &amp; Boxes</h1>
+                <div class="loading-bar-container">
+                    <div class="loading-bar" id="loading-bar"></div>
+                </div>
+                <div class="loading-text">Loading Assets...</div>
+            </div>
+        </div>
+
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="screen">
+            <div class="glass-panel">
+                <h1 class="title">Dots &amp; Boxes</h1>
+                
+                <div class="form-group">
+                    <label>Game Mode</label>
+                    <div class="options-group" id="mode-options" style="flex-wrap: wrap;">
+                        <button class="opt-btn active" data-value="cpu">P1 vs CPU</button>
+                        <button class="opt-btn" data-value="friend">Local</button>
+                        <button class="opt-btn" data-value="host">Host</button>
+                        <button class="opt-btn" data-value="join">Join</button>
+                    </div>
+                </div>
+
+                <!-- Standard Config for CPU, Local, Host -->
+                <div id="standard-config">
+                    <div class="form-group" id="grid-size-group">
+                        <label>Grid Size</label>
+                        <div class="options-group" id="grid-options">
+                            <button class="opt-btn active" data-value="8">8 x 8</button>
+                            <button class="opt-btn" data-value="12">12 x 12</button>
+                        </div>
+                    </div>
+
+                    <div class="player-config">
+                        <div id="p1-config" class="config-section">
+                            <h3 id="p1-title">Player 1</h3>
+                            <div class="form-group">
+                                <label>Color</label>
+                                <div class="color-options" id="p1-color">
+                                    <button class="color-btn green active" data-value="green"></button>
+                                    <button class="color-btn red" data-value="red"></button>
+                                    <button class="color-btn yellow" data-value="yellow"></button>
+                                    <button class="color-btn blue" data-value="blue"></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <div class="symbol-options" id="p1-symbol">
+                                    <button class="symbol-btn active" data-value="sun">☀️</button>
+                                    <button class="symbol-btn" data-value="moon">🌙</button>
+                                    <button class="symbol-btn" data-value="star">⭐</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="p2-config" class="config-section hidden">
+                            <h3>Player 2</h3>
+                            <div class="form-group">
+                                <label>Color</label>
+                                <div class="color-options" id="p2-color">
+                                    <button class="color-btn green" data-value="green"></button>
+                                    <button class="color-btn red active" data-value="red"></button>
+                                    <button class="color-btn yellow" data-value="yellow"></button>
+                                    <button class="color-btn blue" data-value="blue"></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <div class="symbol-options" id="p2-symbol">
+                                    <button class="symbol-btn" data-value="sun">☀️</button>
+                                    <button class="symbol-btn active" data-value="moon">🌙</button>
+                                    <button class="symbol-btn" data-value="star">⭐</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Host Waiting Screen -->
+                <div id="host-wait-screen" class="config-section hidden" style="margin-top:20px; text-align:center;">
+                    <label>Your Room Code:</label>
+                    <div id="room-code-display" style="font-size:2rem; font-weight:800; letter-spacing:4px; padding:15px; background:rgba(0,0,0,0.3); border-radius:12px; margin-bottom:10px; border:1px solid var(--border-light); color: white;">Generating...</div>
+                    <p style="font-size:0.95rem; color:var(--text-secondary);">Share this code with your friend.</p>
+                    <div id="host-status" style="color:var(--color-yellow); margin-top:10px; font-weight: 600;">Waiting for connection...</div>
+                </div>
+
+                <!-- Join Enter Screen -->
+                <div id="join-enter-screen" class="config-section hidden" style="margin-top:20px; text-align:center;">
+                    <label>Enter Friend's Code:</label>
+                    <input type="text" id="join-code-input" placeholder="e.g. A1B2C3" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border-light); background:rgba(0,0,0,0.3); color:white; text-align:center; font-size:1.5rem; letter-spacing:2px; margin-bottom:15px; text-transform:uppercase; outline:none;">
+                    <button id="join-btn" class="secondary-btn" style="margin-top:0;">Connect</button>
+                    <div id="join-status" style="color:var(--color-yellow); margin-top:10px; min-height: 20px;"></div>
+                </div>
+
+                <!-- Join Config Screen (Guest chooses Setup) -->
+                <div id="join-config-screen" class="config-section hidden" style="margin-top:20px;">
+                    <h3 style="text-align:center; border-bottom:1px solid var(--border-light); padding-bottom:15px; margin-bottom:20px;">Choose Your Setup</h3>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <div class="color-options" id="join-p2-color">
+                            <button class="color-btn green" data-value="green"></button>
+                            <button class="color-btn red active" data-value="red"></button>
+                            <button class="color-btn yellow" data-value="yellow"></button>
+                            <button class="color-btn blue" data-value="blue"></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Symbol</label>
+                        <div class="symbol-options" id="join-p2-symbol">
+                            <button class="symbol-btn" data-value="sun">☀️</button>
+                            <button class="symbol-btn active" data-value="moon">🌙</button>
+                            <button class="symbol-btn" data-value="star">⭐</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="setup-error"></div>
+                
+                <button id="start-btn" class="primary-btn">Start Game</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <div class="header-bar">
+                    <button id="back-btn" class="secondary-btn">← Quit</button>
+                    <div class="scores">
+                        <div class="player-score" id="score-p1">
+                            <div class="avatar p1-avatar">☀️</div>
+                            <span class="score-val">0</span>
+                        </div>
+                        <div class="turn-indicator" id="turn-indicator">P1 Turn</div>
+                        <div class="player-score" id="score-p2">
+                            <span class="score-val">0</span>
+                            <div class="avatar p2-avatar">🌙</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-wrapper">
+                    <!-- Transform scale logic applied dynamically here or in UI render -->
+                    <div id="board" class="board"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal hidden">
+            <div class="glass-panel modal-content" style="text-align: center;">
+                <h2 id="winner-text">Player 1 Wins!</h2>
+                <div class="modal-actions">
+                    <button id="play-again-btn" class="primary-btn">Play Again</button>
+                    <button id="main-menu-btn" class="secondary-btn">Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quit Confirmation Modal -->
+        <div id="quit-modal" class="modal hidden">
+            <div class="glass-panel modal-content" style="text-align: center;">
+                <h2>Are you sure you want to quit?</h2>
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button id="quit-yes-btn" class="primary-btn" style="background: var(--color-red); box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);">Yes</button>
+                    <button id="quit-no-btn" class="secondary-btn">No</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/networkLogic.js"></script>
+    <script src="js/gameLogic.js"></script>
+    <script src="js/aiLogic.js"></script>
+    <script src="js/uiRender.js"></script>
+    <script src="js/inputHandler.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
