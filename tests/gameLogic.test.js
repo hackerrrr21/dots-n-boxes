@@ -34,27 +34,27 @@ describe('GameLogic Integrations', () => {
     });
 
     test('validates simple moves', () => {
-        const result = window.Game.makeMove(0, 0, 'horizontal');
-        expect(result).toBeUndefined(); // Returns true/undefined on valid move
-        expect(window.Game.state.lines['0,0,horizontal']).toBe('p1');
+        const result = window.Game.makeMove(0, 0, 'h');
+        expect(result).toBe(true); // Returns true on valid move
+        expect(window.Game.state.lines['0,0,h']).toBe('p1');
         
         // Turn switches to p2 since no box was completed
         expect(window.Game.state.turn).toBe('p2');
     });
 
     test('rejects duplicate moves', () => {
-        window.Game.makeMove(0, 0, 'horizontal');
-        const duplicate = window.Game.makeMove(0, 0, 'horizontal');
+        window.Game.makeMove(0, 0, 'h');
+        const duplicate = window.Game.makeMove(0, 0, 'h');
         expect(duplicate).toBe(false);
     });
 
     test('detects completed boxes and awards points', () => {
-        window.Game.makeMove(0, 0, 'horizontal'); // P1
-        window.Game.makeMove(0, 0, 'vertical');   // P2
-        window.Game.makeMove(1, 0, 'vertical');   // P1
+        window.Game.makeMove(0, 0, 'h'); // P1
+        window.Game.makeMove(0, 0, 'v'); // P2
+        window.Game.makeMove(1, 0, 'v'); // P1
         
         // Final move to close the 0,0 box (bottom line)
-        window.Game.makeMove(0, 1, 'horizontal'); // P2
+        window.Game.makeMove(0, 1, 'h'); // P2
 
         // P2 completed the box, so P2 should have 1 point and keep their turn
         expect(window.Game.state.scores.p2).toBe(1);
