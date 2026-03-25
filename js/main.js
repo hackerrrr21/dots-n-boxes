@@ -195,6 +195,9 @@ function initSetupUI() {
 
     document.getElementById('quit-yes-btn').addEventListener('click', () => {
         if(window.Network && window.Network.isConnected) window.Network.disconnect();
+        if(window.FirebaseAnalytics && window.logEvent) {
+            window.logEvent(window.FirebaseAnalytics, 'level_end', { level_name: AppState.gameConfig.mode, success: false });
+        }
         window.location.reload();
     });
 
@@ -307,6 +310,9 @@ function switchScreen(screenId) {
 }
 
 function startGame(fromNetwork = false) {
+    if(window.FirebaseAnalytics && window.logEvent) {
+        window.logEvent(window.FirebaseAnalytics, 'level_start', { level_name: AppState.gameConfig.mode });
+    }
     switchScreen('game-screen');
     if(window.Game) {
         window.Game.init(AppState.gameConfig);

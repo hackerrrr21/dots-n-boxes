@@ -12,8 +12,19 @@ window.Network = {
         this.isHost = true;
         const shortId = this.generateShortId();
         
-        // Connect to PeerJS server with our custom short ID
-        this.peer = new Peer(shortId);
+        // Connect to PeerJS server with robust ICE servers for cross-network (TURN)
+        const peerConfig = {
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478' },
+                    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+                    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+                    { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+                ]
+            }
+        };
+        this.peer = new Peer(shortId, peerConfig);
         
         this.peer.on('open', (id) => {
             onReady(id);
@@ -41,7 +52,19 @@ window.Network = {
 
     initGuest: function(hostId, onConnect, onData, onError) {
         this.isHost = false;
-        this.peer = new Peer();
+        
+        const peerConfig = {
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478' },
+                    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+                    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+                    { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+                ]
+            }
+        };
+        this.peer = new Peer(peerConfig);
         
         this.peer.on('open', () => {
             this.conn = this.peer.connect(hostId.toUpperCase(), { reliable: true });

@@ -28,7 +28,7 @@
     <!-- Google Services: Firebase Initialization (Demonstration API Setup) -->
     <script type="module" defer>
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+      import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
       const firebaseConfig = {
         projectId: "dotsnboxes-production",
         appId: "1:1234567890:web:abcdef123456",
@@ -37,6 +37,8 @@
       try {
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+        window.FirebaseAnalytics = analytics;
+        window.logEvent = logEvent;
       } catch(e) { /* Safe catch for local executions */ }
     </script>
 </head>
@@ -63,9 +65,9 @@
                 
                 <div class="form-group">
                     <label>Game Mode</label>
-                    <nav class="options-group" id="mode-options" style="flex-wrap: wrap;" aria-label="Select Game Mode">
-                        <button class="opt-btn active" data-value="cpu" aria-label="Play against CPU">P1 vs CPU</button>
-                        <button class="opt-btn" data-value="friend" aria-label="Play locally with a friend">Local</button>
+                    <nav class="options-group" id="mode-options" style="flex-wrap: wrap;" aria-label="Select Game Mode" role="radiogroup">
+                        <button class="opt-btn active" data-value="cpu" aria-label="Play against CPU" role="radio" aria-checked="true">P1 vs CPU</button>
+                        <button class="opt-btn" data-value="friend" aria-label="Play locally with a friend" role="radio" aria-checked="false">Local</button>
                         <button class="opt-btn" data-value="host" aria-label="Host a remote game">Host</button>
                         <button class="opt-btn" data-value="join" aria-label="Join a remote game">Join</button>
                     </nav>
@@ -82,7 +84,7 @@
 
                     <div class="player-config">
                         <section id="p1-config" class="config-section" aria-label="Player 1 Configuration">
-                            <h3 id="p1-title">Player 1</h3>
+                            <h2 id="p1-title">Player 1</h2>
                             <div class="form-group">
                                 <label>Color</label>
                                 <div class="color-options" id="p1-color">
@@ -103,7 +105,7 @@
                         </section>
 
                         <section id="p2-config" class="config-section hidden" aria-label="Player 2 Configuration">
-                            <h3>Player 2</h3>
+                            <h2>Player 2</h2>
                             <div class="form-group">
                                 <label>Color</label>
                                 <div class="color-options" id="p2-color">
@@ -143,7 +145,7 @@
 
                 <!-- Join Config Screen -->
                 <section id="join-config-screen" class="config-section hidden" style="margin-top:20px;" aria-label="Choose Your Joining Setup">
-                    <h3 style="text-align:center; border-bottom:1px solid var(--border-light); padding-bottom:15px; margin-bottom:20px;">Choose Your Setup</h3>
+                    <h2 style="text-align:center; border-bottom:1px solid var(--border-light); padding-bottom:15px; margin-bottom:20px;">Choose Your Setup</h2>
                     <div class="form-group">
                         <label>Color</label>
                         <div class="color-options" id="join-p2-color">
