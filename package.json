@@ -1,0 +1,20 @@
+{
+  "name": "dots-and-boxes",
+  "version": "1.0.0",
+  "description": "Dots and Boxes game with P2P WebRTC Multiplayer",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "game",
+    "dots",
+    "boxes",
+    "webrtc"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
